@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+.env
+*.env
+
+# Large data files — keep schema, exclude raw data
+candidates.jsonl
+embeddings/*.npy
+embeddings/*.pkl
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Model cache / downloads
+*.bin
+*.safetensors
+*.onnx
+sentence_transformers_cache/
+.cache/
+
+# Logs
+*.log
+pipeline_run.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+*.tmp
+*.bak

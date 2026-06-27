@@ -1,0 +1,937 @@
+# Technology Timeline Knowledge Base
+# Each entry drives experience plausibility checks in jd_validator.py.
+#
+# Fields:
+#   introduced:  year the technology was first publicly released
+#   mainstream:  year when broad industry adoption began (used for max-plausible calc)
+#   category:    machine-readable group (used for skill-overload + transferable-skills)
+#   aliases:     alternative names that map to this entry
+#   learning_curve_months: typical time for a competent engineer to become proficient
+#   notes:       context for the reasoning string shown to recruiters
+#
+# Max plausible experience is calculated at runtime as:
+#   max_plausible = current_year - mainstream + 1
+# Add new technologies here; no code changes needed.
+
+# ─── LLM / Foundation Models ──────────────────────────────────────────────────
+
+gpt4:
+  introduced: 2023
+  mainstream: 2023
+  category: llm
+  aliases:
+    - gpt-4
+    - gpt 4
+    - openai gpt4
+    - chatgpt-4
+    - gpt-4o
+    - gpt4o
+  learning_curve_months: 1
+  notes: "Released March 2023 by OpenAI; GPT-4o released May 2024"
+
+gpt3:
+  introduced: 2020
+  mainstream: 2021
+  category: llm
+  aliases:
+    - gpt-3
+    - gpt 3
+    - davinci
+    - text-davinci
+  learning_curve_months: 1
+  notes: "Widely accessible via API from 2021"
+
+claude_model:
+  introduced: 2023
+  mainstream: 2023
+  category: llm
+  aliases:
+    - claude ai
+    - anthropic claude
+    - claude 3
+    - claude 3.5
+    - claude haiku
+    - claude sonnet
+    - claude opus
+  learning_curve_months: 1
+  notes: "Anthropic Claude; public API from 2023"
+
+gemini:
+  introduced: 2023
+  mainstream: 2024
+  category: llm
+  aliases:
+    - google gemini
+    - bard
+    - gemini pro
+    - gemini ultra
+  learning_curve_months: 1
+  notes: "Google Gemini (formerly Bard) — widespread adoption 2024"
+
+llama:
+  introduced: 2023
+  mainstream: 2023
+  category: llm
+  aliases:
+    - meta llama
+    - llama 2
+    - llama 3
+    - llama2
+    - llama3
+    - codellama
+  learning_curve_months: 2
+  notes: "Meta's open-source LLM family; released early 2023"
+
+mistral:
+  introduced: 2023
+  mainstream: 2024
+  category: llm
+  aliases:
+    - mistral ai
+    - mistral 7b
+    - mixtral
+    - mixtral 8x7b
+  learning_curve_months: 1
+
+bert:
+  introduced: 2018
+  mainstream: 2019
+  category: language_model
+  aliases:
+    - bert model
+    - roberta
+    - distilbert
+    - albert
+    - deberta
+    - electra
+  learning_curve_months: 4
+  notes: "BERT released Oct 2018; widely adopted 2019"
+
+# ─── RAG & Retrieval ──────────────────────────────────────────────────────────
+
+rag:
+  introduced: 2020
+  mainstream: 2022
+  category: retrieval
+  aliases:
+    - retrieval augmented generation
+    - retrieval-augmented generation
+    - retrieval augmented
+    - rag pipeline
+    - rag system
+  learning_curve_months: 3
+  notes: "Coined in 2020 Lewis et al.; production adoption took off 2022"
+
+hybrid_retrieval:
+  introduced: 2021
+  mainstream: 2022
+  category: retrieval
+  aliases:
+    - hybrid search
+    - dense sparse retrieval
+    - dense retrieval
+    - bm25 + embeddings
+    - sparse dense retrieval
+  learning_curve_months: 3
+
+bm25:
+  introduced: 1994
+  mainstream: 2010
+  category: retrieval
+  aliases:
+    - okapi bm25
+    - best match 25
+    - sparse retrieval
+  learning_curve_months: 1
+
+# ─── Vector Databases ─────────────────────────────────────────────────────────
+
+faiss:
+  introduced: 2017
+  mainstream: 2021
+  category: vector_db
+  aliases:
+    - facebook ai similarity search
+    - facebook faiss
+    - meta faiss
+  learning_curve_months: 3
+  notes: "Open-sourced by Meta 2017; widely used for ANN search from ~2021"
+
+pinecone:
+  introduced: 2021
+  mainstream: 2022
+  category: vector_db
+  aliases:
+    - pinecone db
+    - pinecone vector
+  learning_curve_months: 2
+  notes: "Managed vector DB; public beta 2021, GA 2022"
+
+weaviate:
+  introduced: 2019
+  mainstream: 2022
+  category: vector_db
+  aliases:
+    - weaviate db
+    - weaviate vector
+  learning_curve_months: 3
+
+qdrant:
+  introduced: 2021
+  mainstream: 2023
+  category: vector_db
+  aliases:
+    - qdrant db
+    - qdrant vector
+  learning_curve_months: 2
+
+milvus:
+  introduced: 2019
+  mainstream: 2021
+  category: vector_db
+  aliases:
+    - zilliz milvus
+    - zilliz
+  learning_curve_months: 3
+
+chromadb:
+  introduced: 2022
+  mainstream: 2023
+  category: vector_db
+  aliases:
+    - chroma db
+    - chroma vector
+    - chroma
+  learning_curve_months: 1
+  notes: "Very new; max ~3 years experience possible"
+
+pgvector:
+  introduced: 2021
+  mainstream: 2023
+  category: vector_db
+  aliases:
+    - pg vector
+    - postgres vector
+    - postgresql vector
+  learning_curve_months: 2
+
+# ─── LLM Orchestration ────────────────────────────────────────────────────────
+
+langchain:
+  introduced: 2022
+  mainstream: 2023
+  category: llm_orchestration
+  aliases:
+    - lang chain
+    - langchain python
+    - langchain framework
+  learning_curve_months: 2
+  notes: "First commit Oct 2022; mainstream by mid-2023"
+
+llamaindex:
+  introduced: 2022
+  mainstream: 2023
+  category: llm_orchestration
+  aliases:
+    - llama index
+    - gpt index
+    - llama-index
+  learning_curve_months: 2
+  notes: "Originally GPT Index (Nov 2022), renamed LlamaIndex"
+
+haystack:
+  introduced: 2020
+  mainstream: 2021
+  category: llm_orchestration
+  aliases:
+    - deepset haystack
+    - haystack framework
+  learning_curve_months: 3
+
+dspy:
+  introduced: 2023
+  mainstream: 2024
+  category: llm_framework
+  aliases:
+    - declarative self-improving
+    - dspy framework
+    - stanford dspy
+  learning_curve_months: 3
+  notes: "Stanford 2023; very new — max ~2 years plausible"
+
+# ─── Embedding Models ─────────────────────────────────────────────────────────
+
+sentence_transformers:
+  introduced: 2019
+  mainstream: 2021
+  category: embeddings
+  aliases:
+    - sentence-transformers
+    - sbert
+    - sentence bert
+    - all-minilm
+    - all-mpnet
+    - msmarco
+  learning_curve_months: 2
+
+text_embeddings:
+  introduced: 2022
+  mainstream: 2023
+  category: embeddings
+  aliases:
+    - text-embedding-ada-002
+    - text-embedding-3
+    - openai embeddings
+    - openai text embeddings
+  learning_curve_months: 1
+
+bge:
+  introduced: 2023
+  mainstream: 2023
+  category: embeddings
+  aliases:
+    - bge embeddings
+    - baai bge
+    - bge-large
+    - bge-base
+    - bge-small
+  learning_curve_months: 1
+
+e5:
+  introduced: 2022
+  mainstream: 2023
+  category: embeddings
+  aliases:
+    - e5 embeddings
+    - microsoft e5
+    - multilingual e5
+  learning_curve_months: 1
+
+# ─── Fine-tuning Techniques ───────────────────────────────────────────────────
+
+lora:
+  introduced: 2021
+  mainstream: 2023
+  category: fine_tuning
+  aliases:
+    - low-rank adaptation
+    - low rank adaptation
+    - lora fine-tuning
+  learning_curve_months: 3
+  notes: "Paper Jan 2022 (Hu et al.); widely adopted 2023"
+
+qlora:
+  introduced: 2023
+  mainstream: 2023
+  category: fine_tuning
+  aliases:
+    - q-lora
+    - quantized lora
+    - qlora fine-tuning
+  learning_curve_months: 2
+  notes: "Paper May 2023; very new"
+
+peft:
+  introduced: 2022
+  mainstream: 2023
+  category: fine_tuning
+  aliases:
+    - parameter efficient fine tuning
+    - parameter-efficient fine-tuning
+    - huggingface peft
+    - adapter tuning
+    - prefix tuning
+    - prompt tuning
+  learning_curve_months: 3
+
+rlhf:
+  introduced: 2017
+  mainstream: 2022
+  category: fine_tuning
+  aliases:
+    - reinforcement learning from human feedback
+    - rlaif
+    - dpo
+    - direct preference optimization
+    - constitutional ai
+  learning_curve_months: 6
+  notes: "Technique from 2017; production relevance (ChatGPT) from 2022"
+
+instruction_tuning:
+  introduced: 2021
+  mainstream: 2022
+  category: fine_tuning
+  aliases:
+    - instruction following
+    - flan
+    - instruct models
+    - supervised fine-tuning
+    - sft
+  learning_curve_months: 3
+
+# ─── ML Frameworks ────────────────────────────────────────────────────────────
+
+pytorch:
+  introduced: 2016
+  mainstream: 2019
+  category: ml_framework
+  aliases:
+    - torch
+    - pytorch framework
+    - libtorch
+  learning_curve_months: 6
+  notes: "Facebook 2016; dominated research from 2019"
+
+tensorflow:
+  introduced: 2015
+  mainstream: 2017
+  category: ml_framework
+  aliases:
+    - tf
+    - tensorflow 2
+    - tf2
+    - tensorflow keras
+  learning_curve_months: 6
+
+keras:
+  introduced: 2015
+  mainstream: 2017
+  category: ml_framework
+  aliases:
+    - keras framework
+  learning_curve_months: 4
+
+jax:
+  introduced: 2018
+  mainstream: 2021
+  category: ml_framework
+  aliases:
+    - google jax
+    - jax framework
+    - flax
+    - haiku
+  learning_curve_months: 8
+  notes: "Google JAX; mainstream in research/production from ~2021"
+
+transformers:
+  introduced: 2019
+  mainstream: 2020
+  category: ml_framework
+  aliases:
+    - huggingface transformers
+    - hf transformers
+    - hugging face transformers
+  learning_curve_months: 4
+  notes: "Hugging Face Transformers library (2019)"
+
+# ─── MLOps ────────────────────────────────────────────────────────────────────
+
+mlflow:
+  introduced: 2018
+  mainstream: 2020
+  category: mlops
+  aliases:
+    - mlflow tracking
+    - mlflow models
+    - databricks mlflow
+  learning_curve_months: 3
+
+wandb:
+  introduced: 2017
+  mainstream: 2020
+  category: mlops
+  aliases:
+    - weights and biases
+    - weights & biases
+    - wandb tracking
+  learning_curve_months: 2
+
+kubeflow:
+  introduced: 2018
+  mainstream: 2021
+  category: mlops
+  aliases:
+    - kfserving
+    - kserve
+    - kubeflow pipelines
+  learning_curve_months: 6
+
+ray:
+  introduced: 2017
+  mainstream: 2020
+  category: mlops
+  aliases:
+    - ray tune
+    - ray serve
+    - ray train
+    - anyscale
+    - ray distributed
+  learning_curve_months: 5
+
+bentoml:
+  introduced: 2019
+  mainstream: 2022
+  category: mlops
+  aliases:
+    - bento ml
+    - bentoml serving
+  learning_curve_months: 3
+
+seldon:
+  introduced: 2018
+  mainstream: 2021
+  category: mlops
+  aliases:
+    - seldon core
+    - seldon deploy
+  learning_curve_months: 5
+
+# ─── Model Serving / Inference ────────────────────────────────────────────────
+
+triton:
+  introduced: 2018
+  mainstream: 2021
+  category: ml_serving
+  aliases:
+    - nvidia triton
+    - triton inference server
+    - tritonis
+  learning_curve_months: 6
+  notes: "NVIDIA Triton Inference Server; production use from ~2021"
+
+vllm:
+  introduced: 2023
+  mainstream: 2024
+  category: llm_serving
+  aliases:
+    - vllm serving
+    - virtual llm
+  learning_curve_months: 2
+  notes: "Very new — max 2 years experience plausible"
+
+tgi:
+  introduced: 2022
+  mainstream: 2023
+  category: llm_serving
+  aliases:
+    - text generation inference
+    - huggingface tgi
+    - hf tgi
+  learning_curve_months: 2
+
+onnx:
+  introduced: 2017
+  mainstream: 2020
+  category: ml_serving
+  aliases:
+    - onnx runtime
+    - open neural network exchange
+    - onnxruntime
+  learning_curve_months: 4
+
+# ─── Cloud Platforms ──────────────────────────────────────────────────────────
+
+aws:
+  introduced: 2006
+  mainstream: 2012
+  category: cloud
+  aliases:
+    - amazon web services
+    - amazon aws
+    - aws cloud
+  learning_curve_months: 6
+
+gcp:
+  introduced: 2008
+  mainstream: 2014
+  category: cloud
+  aliases:
+    - google cloud
+    - google cloud platform
+    - google cloud services
+  learning_curve_months: 6
+
+azure:
+  introduced: 2010
+  mainstream: 2014
+  category: cloud
+  aliases:
+    - microsoft azure
+    - azure cloud
+    - azure services
+  learning_curve_months: 6
+
+sagemaker:
+  introduced: 2017
+  mainstream: 2019
+  category: cloud_ml
+  aliases:
+    - aws sagemaker
+    - amazon sagemaker
+  learning_curve_months: 4
+
+vertex_ai:
+  introduced: 2021
+  mainstream: 2022
+  category: cloud_ml
+  aliases:
+    - google vertex
+    - vertex ai
+    - google ai platform
+  learning_curve_months: 4
+
+# ─── Containerization & Orchestration ─────────────────────────────────────────
+
+kubernetes:
+  introduced: 2014
+  mainstream: 2017
+  category: devops
+  aliases:
+    - k8s
+    - kube
+    - kubernetes cluster
+    - k8
+  learning_curve_months: 6
+  notes: "Google open-sourced 2014; enterprise mainstream from ~2017"
+
+docker:
+  introduced: 2013
+  mainstream: 2016
+  category: devops
+  aliases:
+    - docker container
+    - docker compose
+    - dockerfile
+    - containerization
+  learning_curve_months: 3
+
+terraform:
+  introduced: 2014
+  mainstream: 2017
+  category: devops
+  aliases:
+    - hashicorp terraform
+    - infrastructure as code
+    - iac
+  learning_curve_months: 4
+
+helm:
+  introduced: 2016
+  mainstream: 2019
+  category: devops
+  aliases:
+    - helm charts
+    - kubernetes helm
+  learning_curve_months: 3
+
+# ─── Programming Languages ────────────────────────────────────────────────────
+
+python:
+  introduced: 1991
+  mainstream: 2010
+  category: language
+  aliases:
+    - python 3
+    - python programming
+    - cpython
+  learning_curve_months: 3
+
+rust:
+  introduced: 2010
+  mainstream: 2019
+  category: language
+  aliases:
+    - rust lang
+    - rust programming
+    - rustlang
+  learning_curve_months: 12
+  notes: "Stable 1.0 released 2015; mainstream usage 2019+"
+
+go:
+  introduced: 2009
+  mainstream: 2016
+  category: language
+  aliases:
+    - golang
+    - go language
+    - go programming
+  learning_curve_months: 4
+
+java:
+  introduced: 1995
+  mainstream: 1999
+  category: language
+  aliases:
+    - java programming
+    - java 8
+    - java 11
+    - java 17
+    - jvm
+  learning_curve_months: 6
+
+scala:
+  introduced: 2004
+  mainstream: 2013
+  category: language
+  aliases:
+    - scala programming
+    - akka
+    - scala spark
+  learning_curve_months: 8
+
+cpp:
+  introduced: 1985
+  mainstream: 1995
+  category: language
+  aliases:
+    - c++
+    - c plus plus
+    - cpp programming
+  learning_curve_months: 12
+
+# ─── Web Frameworks ───────────────────────────────────────────────────────────
+
+fastapi:
+  introduced: 2018
+  mainstream: 2020
+  category: web_framework
+  aliases:
+    - fast api
+    - fastapi framework
+    - fastapi python
+  learning_curve_months: 2
+  notes: "Created 2018 by Tiangolo; rapid adoption 2020+"
+
+django:
+  introduced: 2005
+  mainstream: 2008
+  category: web_framework
+  aliases:
+    - django framework
+    - django rest framework
+    - drf
+  learning_curve_months: 4
+
+flask:
+  introduced: 2010
+  mainstream: 2012
+  category: web_framework
+  aliases:
+    - flask framework
+    - flask python
+  learning_curve_months: 2
+
+react:
+  introduced: 2013
+  mainstream: 2016
+  category: frontend
+  aliases:
+    - reactjs
+    - react.js
+    - react framework
+    - next.js
+    - nextjs
+  learning_curve_months: 4
+
+# ─── Databases ────────────────────────────────────────────────────────────────
+
+postgresql:
+  introduced: 1996
+  mainstream: 2005
+  category: database
+  aliases:
+    - postgres
+    - psql
+    - postgresql db
+  learning_curve_months: 4
+
+mongodb:
+  introduced: 2009
+  mainstream: 2013
+  category: database
+  aliases:
+    - mongo
+    - mongodb atlas
+    - mongo db
+  learning_curve_months: 3
+
+redis:
+  introduced: 2009
+  mainstream: 2012
+  category: database
+  aliases:
+    - redis cache
+    - redis db
+    - valkey
+  learning_curve_months: 2
+
+# ─── Data Warehousing ─────────────────────────────────────────────────────────
+
+snowflake:
+  introduced: 2012
+  mainstream: 2018
+  category: data_warehouse
+  aliases:
+    - snowflake db
+    - snowflake data
+  learning_curve_months: 4
+
+bigquery:
+  introduced: 2010
+  mainstream: 2016
+  category: data_warehouse
+  aliases:
+    - google bigquery
+    - bq
+  learning_curve_months: 3
+
+redshift:
+  introduced: 2012
+  mainstream: 2015
+  category: data_warehouse
+  aliases:
+    - aws redshift
+    - amazon redshift
+  learning_curve_months: 3
+
+# ─── Data Processing / Streaming ──────────────────────────────────────────────
+
+spark:
+  introduced: 2012
+  mainstream: 2015
+  category: data_processing
+  aliases:
+    - apache spark
+    - pyspark
+    - spark sql
+    - spark streaming
+  learning_curve_months: 6
+
+databricks:
+  introduced: 2013
+  mainstream: 2018
+  category: data_processing
+  aliases:
+    - databricks platform
+    - delta lake
+    - databricks spark
+  learning_curve_months: 4
+
+kafka:
+  introduced: 2011
+  mainstream: 2015
+  category: streaming
+  aliases:
+    - apache kafka
+    - kafka streaming
+    - kafka queues
+  learning_curve_months: 5
+
+flink:
+  introduced: 2011
+  mainstream: 2016
+  category: streaming
+  aliases:
+    - apache flink
+    - flink streaming
+  learning_curve_months: 6
+
+# ─── Search Engines ───────────────────────────────────────────────────────────
+
+elasticsearch:
+  introduced: 2010
+  mainstream: 2014
+  category: search
+  aliases:
+    - elastic
+    - elastic search
+    - elk stack
+    - elasticsearch kibana
+  learning_curve_months: 4
+
+opensearch:
+  introduced: 2021
+  mainstream: 2022
+  category: search
+  aliases:
+    - amazon opensearch
+    - aws opensearch
+    - open search
+  learning_curve_months: 3
+
+solr:
+  introduced: 2006
+  mainstream: 2010
+  category: search
+  aliases:
+    - apache solr
+    - solr search
+  learning_curve_months: 4
+
+# ─── GPU & Accelerated Computing ──────────────────────────────────────────────
+
+cuda:
+  introduced: 2007
+  mainstream: 2012
+  category: gpu_computing
+  aliases:
+    - nvidia cuda
+    - cuda programming
+    - gpu computing
+  learning_curve_months: 8
+  notes: "NVIDIA CUDA 1.0 in 2007; ML-relevant adoption from ~2012"
+
+# ─── LLM Safety & Observability ───────────────────────────────────────────────
+
+guardrails:
+  introduced: 2023
+  mainstream: 2024
+  category: llm_safety
+  aliases:
+    - guardrails ai
+    - nemo guardrails
+    - llm guardrails
+  learning_curve_months: 2
+  notes: "Very new — max ~2 years plausible"
+
+langsmith:
+  introduced: 2023
+  mainstream: 2024
+  category: llm_observability
+  aliases:
+    - lang smith
+    - langchain smith
+    - langfuse
+    - helicone
+    - traceloop
+  learning_curve_months: 1
+  notes: "LLM tracing/observability tools; very new"
+
+# ─── Ranking / Information Retrieval ──────────────────────────────────────────
+
+learning_to_rank:
+  introduced: 2005
+  mainstream: 2012
+  category: ranking
+  aliases:
+    - ltr
+    - lambdarank
+    - ranknet
+    - listwise ranking
+    - pairwise ranking
+    - pointwise ranking
+    - xgboost ranking
+    - lgbm ranking
+  learning_curve_months: 6
+  notes: "Mature field; LETOR benchmark 2007"
+
+colbert:
+  introduced: 2020
+  mainstream: 2022
+  category: retrieval
+  aliases:
+    - colbert v2
+    - colbertv2
+    - late interaction retrieval
+  learning_curve_months: 4
+  notes: "Stanford 2020; production-ready versions 2022"

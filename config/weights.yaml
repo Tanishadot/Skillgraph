@@ -1,0 +1,54 @@
+scoring:
+  experience:       0.22
+  projects:         0.28
+  semantic_match:   0.20
+  domain_fit:       0.12
+  behavior:         0.08
+  career_growth:    0.05
+  education:        0.03
+  certifications:   0.02
+
+penalties:
+  consulting_only:              0.40
+  honeypot:                     0.04
+  title_career_mismatch:        0.55
+  no_production_ai:             0.70
+  outside_india_no_relocate:    0.88
+  very_high_notice:             0.92
+  primarily_hardware:           0.75
+  pure_research_no_prod:        0.60
+
+behavioral:
+  weights:
+    open_to_work:            0.20
+    recency:                 0.25
+    response_rate:           0.22
+    interview_completion:    0.15
+    notice_period:           0.13
+    github_activity:         0.05
+  recency_good_days:         30
+  recency_stale_days:        90
+  recency_dead_days:         180
+  notice_ideal_days:         30
+  notice_good_days:          60
+  notice_max_penalized_days: 90
+
+experience:
+  ideal_min: 5
+  ideal_max: 9
+  peak:      7
+  ai_ml_min_years: 3
+
+project:
+  weights:
+    production_signals:   0.30
+    scale_signals:        0.12
+    ownership_signals:    0.22
+    architecture_signals: 0.16
+    ai_stack_signals:     0.20
+
+embedding:
+  model_name: "all-MiniLM-L6-v2"
+  batch_size: 128
+  precomputed_embeddings: "candidate_embeddings.npy"
+  precomputed_ids:        "candidate_ids.json"
