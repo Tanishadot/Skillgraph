@@ -82,7 +82,7 @@ export function Dashboard() {
       <div className="p-6">
         <ErrorState
           title="Backend not reachable"
-          message="Make sure the FastAPI server is running: uvicorn api.server:app --reload --port 8000"
+          message="Make sure the FastAPI server is running: uvicorn api.server:app --reload --port 8080"
         />
       </div>
     )
@@ -94,7 +94,9 @@ export function Dashboard() {
       <motion.div variants={fadeUp} initial="initial" animate="animate" className="mb-6">
         <h1 className="text-xl font-semibold text-white">Candidate Intelligence Dashboard</h1>
         <p className="text-sm text-zinc-500 mt-1">
-          Senior AI Engineer · Redrob AI · 100,000 applicants processed
+          {stats
+            ? `${stats.total_candidates.toLocaleString()} applicants screened · ${stats.interview_ready} interview-ready · ${stats.hidden_gems} hidden gems`
+            : 'AI-powered candidate ranking pipeline'}
         </p>
       </motion.div>
 

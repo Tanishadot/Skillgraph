@@ -10,6 +10,7 @@ import {
   GitCompare,
   Settings,
   Zap,
+  ExternalLink,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -37,8 +38,8 @@ export function Sidebar() {
           <Zap className="w-4 h-4 text-white" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-white leading-none">Hiring Copilot</p>
-          <p className="text-[10px] text-zinc-500 mt-0.5">AI-powered</p>
+          <p className="text-sm font-semibold text-white leading-none">SkillGraph</p>
+          <p className="text-[10px] text-zinc-500 mt-0.5">AI Hiring Copilot</p>
         </div>
       </div>
 
@@ -71,14 +72,15 @@ export function Sidebar() {
 
       {/* Bottom */}
       <div className="px-3 pb-4 border-t border-white/[0.06] pt-4 space-y-0.5">
-        <NavLink
-          to="/portal"
+        <a
+          href="/portal"
           target="_blank"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] transition-all duration-150"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04] transition-all duration-150 group"
         >
-          <Users className="w-4 h-4" />
-          Candidate Portal
-        </NavLink>
+          <ExternalLink className="w-4 h-4 group-hover:text-violet-400 transition-colors" />
+          <span>Candidate Portal</span>
+        </a>
         <NavLink
           to="/settings"
           className={({ isActive }) =>

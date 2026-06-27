@@ -82,7 +82,7 @@ export function RecruiterChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your **AI Hiring Copilot**. I have full access to the candidate pool for the Senior AI Engineer role at Redrob. Ask me anything about candidates, scores, comparisons, or hiring strategy.',
+      content: 'Hello! I\'m your **SkillGraph AI Copilot**. I have full access to the ranked candidate pool — ask me anything about scores, comparisons, skills, hidden gems, or hiring strategy.',
       timestamp: new Date().toISOString(),
       candidate_ids: [],
     },

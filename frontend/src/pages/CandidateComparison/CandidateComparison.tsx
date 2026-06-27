@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts'
 import { GitCompare, Plus, X, Trophy, CheckCircle2 } from 'lucide-react'
-import { compareCandiates, fetchCandidates } from '@/api/candidates'
+import { compareCandidates, fetchCandidates } from '@/api/candidates'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
@@ -33,7 +33,7 @@ export function CandidateComparison() {
   })
 
   const { mutate: compare, isPending } = useMutation({
-    mutationFn: () => compareCandiates(selectedIds),
+    mutationFn: () => compareCandidates(selectedIds),
     onSuccess: setResult,
   })
 

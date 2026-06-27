@@ -29,6 +29,6 @@ export function fetchHiddenGems(): Promise<{ candidates: CandidateDetail[]; tota
   return api.get('/candidates/hidden-gems')
 }
 
-export function compareCandiates(ids: string[]): Promise<ComparisonResponse> {
+export function compareCandidates(ids: string[]): Promise<ComparisonResponse> {
   return api.post('/candidates/compare', ids)
 }

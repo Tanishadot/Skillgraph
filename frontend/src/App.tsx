@@ -1,6 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { Layout } from '@/components/layout/Layout'
+import { Landing } from '@/pages/Landing/Landing'
 import { Dashboard } from '@/pages/Dashboard/Dashboard'
 import { CandidateRankings } from '@/pages/CandidateRankings/CandidateRankings'
 import { CandidateDetail } from '@/pages/CandidateDetail/CandidateDetail'
@@ -16,8 +17,12 @@ export default function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/portal" element={<CandidatePortal />} />
+
+        {/* Recruiter dashboard */}
         <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="rankings" element={<CandidateRankings />} />
           <Route path="candidates/:id" element={<CandidateDetail />} />
@@ -28,7 +33,6 @@ export default function App() {
           <Route path="chat" element={<RecruiterChat />} />
           <Route path="settings" element={<Settings />} />
         </Route>
-        <Route path="/portal" element={<CandidatePortal />} />
       </Routes>
     </AnimatePresence>
   )
