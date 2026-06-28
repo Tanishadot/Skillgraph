@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Zap, Users, Briefcase, ArrowRight, ChevronRight, Brain, Target, TrendingUp } from 'lucide-react'
+import { DemoGuide } from '@/components/common/DemoGuide'
 
 const FEATURES = [
   { icon: Brain, label: '7-layer AI ranking', desc: 'Semantic, behavioral, domain & growth signals' },
@@ -122,6 +123,7 @@ export function Landing() {
       <footer className="border-t border-white/[0.06] px-8 py-5 text-center text-xs text-zinc-700">
         SkillGraph AI · Built for Redrob AI Hackathon 2025
       </footer>
+      <DemoGuide />
     </div>
   )
 }

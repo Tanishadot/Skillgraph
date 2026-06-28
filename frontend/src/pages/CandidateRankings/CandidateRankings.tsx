@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  Search, Filter, ChevronLeft, ChevronRight, MapPin, Clock,
-  Cpu, ArrowUpDown, Gem, CheckCircle2, ExternalLink, GitCompare,
+  Search, ChevronLeft, ChevronRight, MapPin, Clock,
+  Cpu, ArrowUpDown, Gem, CheckCircle2, GitCompare,
 } from 'lucide-react'
 import { fetchCandidates } from '@/api/candidates'
 import { Button } from '@/components/ui/Button'
@@ -155,12 +155,15 @@ export function CandidateRankings() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="rounded-xl border border-white/[0.06] bg-zinc-900/60 hover:border-white/[0.10] hover:bg-zinc-900/80 transition-all duration-150 group"
               >
+                <Link
+                  to={`/candidates/${c.candidate_id}`}
+                  className="block rounded-xl border border-white/[0.06] bg-zinc-900/60 hover:border-violet-500/20 hover:bg-zinc-900/80 transition-all duration-150 group"
+                >
                 <div className="flex items-center gap-4 px-4 py-3.5">
                   {/* Compare checkbox */}
                   <button
-                    onClick={() => toggleCompare(c.candidate_id)}
+                    onClick={(e) => { e.preventDefault(); toggleCompare(c.candidate_id) }}
                     className={`w-4 h-4 rounded border transition-colors shrink-0 ${
                       compareIds.includes(c.candidate_id)
                         ? 'bg-violet-600 border-violet-600'
@@ -201,22 +204,18 @@ export function CandidateRankings() {
                       </span>
                     </div>
 
-                    {/* Mini score bar */}
-                    <div className="flex gap-1.5 mt-2">
+                    {/* Score chips */}
+                    <div className="flex gap-1.5 mt-2 flex-wrap">
                       {SCORE_DIMS.map((dim) => {
-                        const detail = (c as any).score_breakdown?.[dim]
-                        const val = typeof detail === 'number' ? detail : c.overall_score * 0.9
+                        const val: number = typeof (c as any).score_breakdown?.[dim] === 'number'
+                          ? (c as any).score_breakdown[dim]
+                          : c.overall_score * 0.9
+                        const labels: Record<string, string> = { projects: 'Proj', semantic_match: 'Sem', experience: 'Exp', domain_fit: 'Dom' }
                         return (
-                          <div key={dim} className="flex flex-col items-center gap-0.5">
-                            <div className="w-10 h-1 rounded-full overflow-hidden bg-white/[0.04]">
-                              <div
-                                className="h-full rounded-full"
-                                style={{
-                                  width: `${Math.min(100, val * 100)}%`,
-                                  backgroundColor: scoreToHsl(val),
-                                }}
-                              />
-                            </div>
+                          <div key={dim} className="flex items-center gap-1 bg-white/[0.03] border border-white/[0.05] rounded-md px-1.5 py-0.5">
+                            <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: scoreToHsl(val) }} />
+                            <span className="text-[9px] text-zinc-600">{labels[dim]}</span>
+                            <span className="text-[9px] font-mono text-zinc-400">{Math.round(val * 100)}</span>
                           </div>
                         )
                       })}
@@ -232,24 +231,19 @@ export function CandidateRankings() {
                     </div>
                   </div>
 
-                  {/* View button */}
-                  <Link
-                    to={`/candidates/${c.candidate_id}`}
-                    className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Button size="sm" variant="secondary">
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      View
-                    </Button>
-                  </Link>
+                  {/* Score value */}
+                  <span className="shrink-0 text-xs font-bold text-zinc-400 group-hover:text-violet-300 transition-colors tabular-nums">
+                    {(c.overall_score * 100).toFixed(1)}
+                  </span>
                 </div>
 
                 {/* Reasoning preview */}
-                <div className="px-14 pb-3">
-                  <p className="text-[11px] text-zinc-600 leading-relaxed">
+                <div className="px-[4.5rem] pb-3">
+                  <p className="text-[11px] text-zinc-600 leading-relaxed group-hover:text-zinc-500 transition-colors">
                     {truncate(c.reasoning, 180)}
                   </p>
                 </div>
+                </Link>
               </motion.div>
             ))}
           </div>

@@ -24,7 +24,7 @@ export function TopNav() {
 
   const title =
     Object.entries(PAGE_TITLES).find(([path]) => pathname.startsWith(path))?.[1] ??
-    'AI Hiring Copilot'
+    'SkillGraph'
 
   return (
     <header className="h-14 border-b border-white/[0.06] flex items-center justify-between px-6 bg-black/10 shrink-0">

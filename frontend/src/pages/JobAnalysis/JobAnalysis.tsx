@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { FileText, AlertTriangle, CheckCircle2, ArrowRight, RefreshCw, Info } from 'lucide-react'
@@ -36,6 +36,11 @@ export function JobAnalysis() {
     mutationFn: () => validateJD(jdText),
     onSuccess: (data) => setResult(data),
   })
+
+  // Auto-run on first load so demo starts with populated results
+  useEffect(() => {
+    runValidation()
+  }, [])
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">

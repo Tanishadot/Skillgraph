@@ -47,7 +47,9 @@ export function Analytics() {
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="mb-6">
         <h1 className="text-xl font-semibold text-white">Pipeline Analytics</h1>
-        <p className="text-sm text-zinc-500 mt-1">Full-funnel insights across 100,000 candidates</p>
+        <p className="text-sm text-zinc-500 mt-1">
+          Full-funnel insights across {stats ? stats.total_candidates.toLocaleString() : '—'} candidates
+        </p>
       </div>
 
       {/* Summary stats */}
