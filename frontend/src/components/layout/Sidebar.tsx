@@ -14,15 +14,53 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const NAV = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/rankings', icon: Users, label: 'Rankings' },
-  { to: '/compare', icon: GitCompare, label: 'Compare' },
-  { to: '/jd-analysis', icon: FileText, label: 'JD Analysis' },
-  { to: '/hidden-talent', icon: Gem, label: 'Hidden Talent' },
-  { to: '/analytics', icon: BarChart3, label: 'Analytics' },
-  { to: '/chat', icon: MessageSquare, label: 'AI Copilot' },
+const NAV_GROUPS = [
+  {
+    label: undefined,
+    items: [
+      { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    ],
+  },
+  {
+    label: 'RECRUIT',
+    items: [
+      { to: '/rankings',    icon: Users,      label: 'Rankings'    },
+      { to: '/compare',     icon: GitCompare, label: 'Compare'     },
+      { to: '/jd-analysis', icon: FileText,   label: 'JD Analysis' },
+    ],
+  },
+  {
+    label: 'DISCOVER',
+    items: [
+      { to: '/hidden-talent', icon: Gem,           label: 'Hidden Talent' },
+      { to: '/analytics',     icon: BarChart3,     label: 'Analytics'     },
+      { to: '/chat',          icon: MessageSquare, label: 'AI Copilot'    },
+    ],
+  },
 ]
+
+function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ElementType; label: string }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        cn(
+          'relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150',
+          isActive
+            ? 'bg-violet-600/15 text-violet-300 font-medium border-l-2 border-violet-500 pl-[10px]'
+            : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border-l-2 border-transparent pl-[10px]'
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <Icon className={cn('w-4 h-4 shrink-0', isActive ? 'text-violet-400' : '')} />
+          {label}
+        </>
+      )}
+    </NavLink>
+  )
+}
 
 export function Sidebar() {
   return (
@@ -44,29 +82,20 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {NAV.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150',
-                isActive
-                  ? 'bg-violet-600/15 text-violet-300 font-medium'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'
-              )
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Icon
-                  className={cn('w-4 h-4 shrink-0', isActive ? 'text-violet-400' : '')}
-                />
-                {label}
-              </>
+      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+        {NAV_GROUPS.map((group, gi) => (
+          <div key={gi}>
+            {group.label && (
+              <p className="px-3 mb-1.5 text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">
+                {group.label}
+              </p>
             )}
-          </NavLink>
+            <div className="space-y-0.5">
+              {group.items.map(({ to, icon, label }) => (
+                <NavItem key={to} to={to} icon={icon} label={label} />
+              ))}
+            </div>
+          </div>
         ))}
       </nav>
 
@@ -85,10 +114,10 @@ export function Sidebar() {
           to="/settings"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150',
+              'relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 border-l-2',
               isActive
-                ? 'bg-violet-600/15 text-violet-300 font-medium'
-                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'
+                ? 'bg-violet-600/15 text-violet-300 font-medium border-violet-500 pl-[10px]'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border-transparent pl-[10px]'
             )
           }
         >
