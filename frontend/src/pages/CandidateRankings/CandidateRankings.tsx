@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/common/ErrorState'
 import { ScoreRing } from '@/components/common/ScoreRing'
 import { formatYears, formatDays, scoreToHsl, truncate } from '@/lib/utils'
+import { interviewRecommendation } from '@/lib/hiringIntelligence'
 import type { CandidateFilters } from '@/types'
 
 const SORT_OPTIONS = [
@@ -44,13 +45,27 @@ function Initials({ title }: { title: string }) {
   )
 }
 
-// ─── Recommendation badge ───────────────────────────────────────────────────────
+// ─── Interview Recommendation Label ────────────────────────────────────────────
 
-function RecBadge({ rec }: { rec: string }) {
-  const r = rec.toLowerCase()
-  if (r.includes('strong')) return <Badge variant="emerald">{rec}</Badge>
-  if (r.includes('good'))   return <Badge variant="violet">{rec}</Badge>
-  return null
+function RecLabel({ score, hasProductionML, isHiddenGem }: {
+  score: number
+  hasProductionML: boolean
+  isHiddenGem: boolean
+}) {
+  const rec = interviewRecommendation(score, hasProductionML, isHiddenGem)
+  const cls: Record<string, string> = {
+    emerald: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-300',
+    violet:  'bg-violet-500/10 border-violet-500/25 text-violet-300',
+    blue:    'bg-blue-500/10 border-blue-500/25 text-blue-300',
+    amber:   'bg-amber-500/10 border-amber-500/25 text-amber-300',
+    zinc:    'bg-zinc-800 border-zinc-700 text-zinc-400',
+    rose:    'bg-rose-500/10 border-rose-500/25 text-rose-300',
+  }
+  return (
+    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border whitespace-nowrap ${cls[rec.color]}`}>
+      {rec.label}
+    </span>
+  )
 }
 
 // ─── CandidateRankings ─────────────────────────────────────────────────────────
@@ -261,7 +276,6 @@ export function CandidateRankings() {
                         {c.has_production_ml && <Badge variant="emerald">Prod ML</Badge>}
                         {c.is_hidden_gem && <Badge variant="amber">Gem</Badge>}
                         {c.open_to_work && <Badge variant="violet">Open</Badge>}
-                        <RecBadge rec={c.recommendation} />
                       </div>
                       <div className="flex flex-wrap items-center gap-3 mt-1">
                         <span className="flex items-center gap-1 text-[11px] text-zinc-500">
@@ -310,10 +324,14 @@ export function CandidateRankings() {
                       </div>
                     </div>
 
-                    {/* Score value */}
-                    <span className="shrink-0 text-xs font-bold text-zinc-400 group-hover:text-violet-300 transition-colors tabular-nums">
-                      {(c.overall_score * 100).toFixed(1)}
-                    </span>
+                    {/* Interview Recommendation */}
+                    <div className="shrink-0">
+                      <RecLabel
+                        score={c.overall_score}
+                        hasProductionML={c.has_production_ml}
+                        isHiddenGem={c.is_hidden_gem}
+                      />
+                    </div>
                   </div>
 
                   {/* Reasoning preview */}

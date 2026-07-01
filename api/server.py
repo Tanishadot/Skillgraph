@@ -2,17 +2,24 @@
 AI Hiring Copilot — FastAPI backend server.
 
 Run:
-    pip install fastapi uvicorn python-multipart
     uvicorn api.server:app --reload --port 8080
+
+Environment variables:
+    ALLOWED_ORIGINS  Comma-separated list of allowed CORS origins.
+                     Defaults to http://localhost:5173,http://127.0.0.1:5173
+    ANTHROPIC_API_KEY  Optional. Enables Claude-powered AI Copilot responses.
 """
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import sys
 from pathlib import Path
 from typing import List, Optional
+
+logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,9 +43,12 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 
+_default_origins = "http://localhost:5173,http://127.0.0.1:5173"
+_allowed_origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", _default_origins).split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -453,6 +463,44 @@ def _rule_chat(message: str, store: DataStore) -> ChatResponse:
     return ChatResponse(response="\n".join(lines), sources=[], candidate_ids=top3)
 
 
+def _build_chat_context(message: str, store: DataStore) -> str:
+    """
+    Build focused context for Claude: include mentioned candidates' full details
+    plus a summary of the top-5. Avoids dumping all 100 candidates into the prompt.
+    """
+    mentioned = _extract_ids(message, store)
+
+    # Full detail for explicitly mentioned candidates
+    detail_blocks = []
+    for cid in mentioned:
+        if cid in store.details:
+            d = store.details[cid]
+            sb = d["score_breakdown"]
+            detail_blocks.append(
+                f"=== {cid} (Rank #{d['rank']}, Score {d['overall_score']:.3f}) ===\n"
+                f"Title: {d['title']} | Exp: {d['experience_years']}yr | AI: {d['ai_ml_years']}yr\n"
+                f"Location: {d['location']} | Notice: {d['notice_period_days']}d\n"
+                f"Prod ML: {d['has_production_ml']} | Open: {d['open_to_work']}\n"
+                f"Scores — Projects:{sb.get('projects',0):.2f} Semantic:{sb.get('semantic_match',0):.2f} "
+                f"Exp:{sb.get('experience',0):.2f} Domain:{sb.get('domain_fit',0):.2f} "
+                f"Behavior:{sb.get('behavior',0):.2f} Growth:{sb.get('career_growth',0):.2f}\n"
+                f"Reasoning: {d['reasoning'][:300]}"
+            )
+
+    # Always include top-5 summary for general context
+    top5 = [
+        f"#{store.summaries[cid]['rank']} {cid}: {store.summaries[cid]['title']} "
+        f"({store.summaries[cid]['overall_score']:.3f})"
+        for cid in store.ranked_ids[:5]
+    ]
+
+    parts = [f"TOP-5 CANDIDATES:\n" + "\n".join(top5)]
+    if detail_blocks:
+        parts.append("CANDIDATE DETAILS (from your query):\n" + "\n\n".join(detail_blocks))
+
+    return "\n\n".join(parts)
+
+
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     s = _store()
@@ -461,13 +509,13 @@ async def chat(request: ChatRequest):
         try:
             import anthropic
             client = anthropic.Anthropic(api_key=api_key)
-            context = json.dumps([s.summaries[cid] for cid in s.ranked_ids[:10]], indent=2)
+            context = _build_chat_context(request.message, s)
             messages = [{"role": m.role, "content": m.content} for m in request.history[-6:]]
             messages.append({"role": "user", "content": request.message})
             system = (
                 "You are SkillGraph AI, an intelligent hiring copilot for technical recruiters. "
                 "Answer factually based on the provided candidate data. Use markdown. Be concise.\n\n"
-                f"CANDIDATE DATA:\n{context}"
+                f"PIPELINE DATA:\n{context}"
             )
             resp = client.messages.create(
                 model="claude-haiku-4-5-20251001",
@@ -480,8 +528,14 @@ async def chat(request: ChatRequest):
                 sources=[],
                 candidate_ids=_extract_ids(request.message, s),
             )
-        except Exception:
-            pass
+        except anthropic.APIConnectionError as exc:
+            logger.warning("Anthropic connection error: %s — falling back to rule-based chat", exc)
+        except anthropic.RateLimitError as exc:
+            logger.warning("Anthropic rate limit: %s — falling back to rule-based chat", exc)
+        except anthropic.APIStatusError as exc:
+            logger.warning("Anthropic API error %s: %s — falling back to rule-based chat", exc.status_code, exc.message)
+        except Exception as exc:
+            logger.warning("Unexpected chat error: %s — falling back to rule-based chat", exc)
     return _rule_chat(request.message, s)
 
 

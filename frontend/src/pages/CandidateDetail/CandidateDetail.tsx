@@ -19,6 +19,14 @@ import {
   formatYears, formatDays, relativeTime, scoreColor, proficiencyColor,
   SCORE_LABELS, SCORE_WEIGHTS, scoreToHsl, cn,
 } from '@/lib/utils'
+import {
+  interviewRecommendation,
+  generateDecisionSummary,
+  generateWhyThisCandidate,
+  generateValidationAreas,
+  generateTradeoffs,
+  generateOpportunityCost,
+} from '@/lib/hiringIntelligence'
 import type { CandidateDetail as CandidateDetailType } from '@/types'
 
 // ─── Dimension explanations ───────────────────────────────────────────────────
@@ -199,6 +207,13 @@ export function CandidateDetail() {
     ([, v]) => typeof v === 'number' && (v as number) > 0
   ) as [string, number][]
 
+  const hiRec          = interviewRecommendation(candidate.overall_score, candidate.has_production_ml, candidate.is_hidden_gem)
+  const decisionSummary   = generateDecisionSummary(candidate)
+  const whyReasons        = generateWhyThisCandidate(candidate)
+  const validationAreas   = generateValidationAreas(candidate)
+  const tradeoffs         = generateTradeoffs(candidate)
+  const opportunityCost   = generateOpportunityCost(candidate)
+
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
       <Link
@@ -225,15 +240,10 @@ export function CandidateDetail() {
               {candidate.is_hidden_gem && <Badge variant="amber"><Gem className="w-3 h-3 mr-1" />Hidden Gem</Badge>}
               {candidate.is_honeypot && <Badge variant="rose"><AlertTriangle className="w-3 h-3 mr-1" />Honeypot</Badge>}
               {candidate.consulting_only && <Badge variant="zinc">Consulting Only</Badge>}
-              {candidate.recommendation && (
-                <Badge variant={
-                  candidate.recommendation.toLowerCase().includes('strong') ? 'emerald'
-                  : candidate.recommendation.toLowerCase().includes('good') ? 'violet'
-                  : 'zinc'
-                }>
-                  {candidate.recommendation}
-                </Badge>
-              )}
+              {(() => {
+                const rec = interviewRecommendation(candidate.overall_score, candidate.has_production_ml, candidate.is_hidden_gem)
+                return <Badge variant={rec.color}>{rec.label}</Badge>
+              })()}
             </div>
             {candidate.headline && (
               <p className="text-sm text-zinc-400 mb-2">{candidate.headline}</p>
@@ -260,6 +270,66 @@ export function CandidateDetail() {
         </div>
       </motion.div>
 
+      {/* ── Decision Panel ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.07, duration: 0.4 }}
+        className="mb-4"
+      >
+        <Card className="p-5">
+          <div className="flex flex-col gap-4">
+            {/* Recommendation + Summary */}
+            <div className="flex items-start gap-5">
+              <div className="shrink-0 min-w-[140px]">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">Recruiter Recommendation</p>
+                <Badge variant={hiRec.color} className="text-sm px-3 py-1 font-semibold block w-fit">{hiRec.label}</Badge>
+                <p className="text-[10px] text-zinc-600 mt-2 leading-relaxed max-w-[160px]">{hiRec.description}</p>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">Decision Summary</p>
+                <p className="text-sm text-zinc-300 leading-relaxed">{decisionSummary}</p>
+              </div>
+            </div>
+
+            {/* Why This Candidate + Validate in Interview */}
+            {(whyReasons.length > 0 || validationAreas.length > 0) && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-white/[0.05]">
+                {whyReasons.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-2.5">Why This Candidate</p>
+                    <div className="space-y-2.5">
+                      {whyReasons.map((reason, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                          <div>
+                            <p className="text-xs font-medium text-zinc-300">{reason.label}</p>
+                            <p className="text-[11px] text-zinc-500 leading-relaxed mt-0.5">{reason.detail}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {validationAreas.length > 0 && (
+                  <div>
+                    <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-2.5">Validate in Interview</p>
+                    <div className="space-y-2.5">
+                      {validationAreas.map((area, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <TrendingUp className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+                          <p className="text-[11px] text-zinc-400 leading-relaxed">{area}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </Card>
+      </motion.div>
+
       {/* ── 3-column grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
@@ -281,6 +351,12 @@ export function CandidateDetail() {
                 />
               ))}
             </div>
+            {candidate.semantic_score_estimated && (
+              <p className="mt-3 text-[10px] text-zinc-600 leading-relaxed border-t border-white/[0.04] pt-3">
+                * Semantic Match shown is the estimated contribution back-calculated from the pipeline output.
+                Raw cosine similarity is stored in the ranking CSV.
+              </p>
+            )}
             <div className="mt-5 h-52">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={radarData} margin={{ top: 0, right: 16, bottom: 0, left: 16 }}>
@@ -309,6 +385,54 @@ export function CandidateDetail() {
                     <Progress value={val} height={3} color={scoreToHsl(val)} />
                   </div>
                 ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Tradeoffs */}
+          {(tradeoffs.strengths.length > 0 || tradeoffs.weaknesses.length > 0 || tradeoffs.risks.length > 0) && (
+            <Card className="p-5">
+              <p className="text-xs text-zinc-500 font-medium uppercase tracking-wider mb-4">Tradeoffs</p>
+              <div className="space-y-4">
+                {tradeoffs.strengths.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                      <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Strengths</p>
+                    </div>
+                    <ul className="space-y-1">
+                      {tradeoffs.strengths.map((s, i) => (
+                        <li key={i} className="text-[11px] text-zinc-400 pl-3.5 relative before:absolute before:left-1 before:top-[5px] before:w-1 before:h-1 before:rounded-full before:bg-emerald-500/60">{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tradeoffs.weaknesses.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <AlertTriangle className="w-3 h-3 text-amber-400" />
+                      <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Gaps</p>
+                    </div>
+                    <ul className="space-y-1">
+                      {tradeoffs.weaknesses.map((s, i) => (
+                        <li key={i} className="text-[11px] text-zinc-500 pl-3.5 relative before:absolute before:left-1 before:top-[5px] before:w-1 before:h-1 before:rounded-full before:bg-amber-400/60">{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {tradeoffs.risks.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <ShieldAlert className="w-3 h-3 text-rose-400" />
+                      <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Risks</p>
+                    </div>
+                    <ul className="space-y-1">
+                      {tradeoffs.risks.map((s, i) => (
+                        <li key={i} className="text-[11px] text-zinc-500 pl-3.5 relative before:absolute before:left-1 before:top-[5px] before:w-1 before:h-1 before:rounded-full before:bg-rose-400/60">{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </Card>
           )}
@@ -467,7 +591,7 @@ export function CandidateDetail() {
           <Card className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Brain className="w-4 h-4 text-violet-400" />
-              <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider">AI Ranking Explanation</p>
+              <p className="text-xs text-zinc-400 font-medium uppercase tracking-wider">Ranking Evidence</p>
             </div>
             <p className="text-sm text-zinc-300 leading-relaxed">{candidate.reasoning}</p>
             {candidate.tier1_skills?.length > 0 && (
@@ -488,6 +612,15 @@ export function CandidateDetail() {
                     <Badge key={sk} variant="zinc">{sk}</Badge>
                   ))}
                 </div>
+              </div>
+            )}
+            {opportunityCost && (
+              <div className="mt-4 pt-4 border-t border-white/[0.05]">
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <AlertTriangle className="w-3 h-3 text-amber-400" />
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Opportunity Cost of Rejection</p>
+                </div>
+                <p className="text-[11px] text-zinc-500 leading-relaxed">{opportunityCost}</p>
               </div>
             )}
           </Card>

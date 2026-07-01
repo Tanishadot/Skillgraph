@@ -77,6 +77,7 @@ export interface CandidateDetail extends CandidateSummary {
   tier1_skills: string[]
   tier2_skills: string[]
   project_breakdown: Record<string, number>
+  semantic_score_estimated?: boolean
 }
 
 export interface PaginatedCandidates {

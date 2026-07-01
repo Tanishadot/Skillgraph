@@ -332,6 +332,7 @@ class DataStore:
                 "certifications": round(sc.cert_score, 3),
                 "penalty": round(sc.penalty, 3),
             },
+            "semantic_score_estimated": True,
             "behavior_signals": {
                 "open_to_work": bool(cp.open_to_work),
                 "last_active_days": cp.days_since_active,
@@ -396,16 +397,17 @@ class DataStore:
         interview_ready = sum(1 for sc in scored_list if sc.final_score >= 0.70)
         honeypots = sum(1 for cid in self.ranked_ids if self.profiles[cid].is_honeypot)
 
+        honeypots_detected = sum(1 for p in self.profiles.values() if p.is_honeypot)
         return {
             "total_candidates": self.total_candidates,
             "qualified_candidates": total_ranked,
             "interview_ready": interview_ready,
             "hidden_gems": len(self.hidden_gems),
-            "rejected": max(0, self.total_candidates - total_ranked - 85),
+            "rejected": max(0, self.total_candidates - total_ranked - honeypots_detected),
             "avg_score": round(avg_score, 3),
             "avg_confidence": round(avg_conf, 3),
             "avg_recruiter_response_rate": round(avg_response, 3),
-            "honeypots_detected": 85,  # from the actual run
+            "honeypots_detected": honeypots_detected,
             "pipeline_ready": True,
         }
 

@@ -19,6 +19,9 @@ env/
 candidates.jsonl
 embeddings/*.npy
 embeddings/*.pkl
+# Pre-computed pipeline artifacts (root-level)
+candidate_embeddings.npy
+candidate_ids.json
 
 # Node / Frontend
 frontend/node_modules/
@@ -39,6 +42,12 @@ pipeline_run.log
 # OS
 .DS_Store
 Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
 
 # Temp
 *.tmp

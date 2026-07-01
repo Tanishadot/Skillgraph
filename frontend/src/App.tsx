@@ -12,6 +12,7 @@ import { Analytics } from '@/pages/Analytics/Analytics'
 import { RecruiterChat } from '@/pages/RecruiterChat/RecruiterChat'
 import { CandidatePortal } from '@/pages/CandidatePortal/CandidatePortal'
 import { Settings } from '@/pages/Settings/Settings'
+import { NotFound } from '@/pages/NotFound/NotFound'
 
 export default function App() {
   return (
@@ -33,6 +34,9 @@ export default function App() {
           <Route path="chat" element={<RecruiterChat />} />
           <Route path="settings" element={<Settings />} />
         </Route>
+
+        {/* 404 catch-all */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   )

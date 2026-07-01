@@ -16,7 +16,8 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { AnimatedCounter } from '@/components/common/AnimatedCounter'
 import { ScoreRing } from '@/components/common/ScoreRing'
 import { ErrorState } from '@/components/common/ErrorState'
-import { formatYears, formatDays, scoreBg } from '@/lib/utils'
+import { formatYears, formatDays } from '@/lib/utils'
+import { generateHiringIntelligence, interviewRecommendation } from '@/lib/hiringIntelligence'
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -191,44 +192,26 @@ export function Dashboard() {
     )
   }
 
-  // Build AI Insights from live stats
-  const insights: InsightCardProps[] = []
-  if (stats) {
-    if (stats.hidden_gems > 0) {
-      insights.push({
-        icon: Gem,
-        severity: 'amber',
-        headline: `${stats.hidden_gems} hidden gem${stats.hidden_gems !== 1 ? 's' : ''} found`,
-        sub: 'Strong technical fit but low recruiter visibility — high signal, low noise candidates.',
-        actionLabel: 'Review Gems',
-        actionTo: '/hidden-talent',
-      })
-    }
-    if (stats.honeypots_detected > 20) {
-      insights.push({
-        icon: ShieldAlert,
-        severity: 'rose',
-        headline: `${stats.honeypots_detected} suspicious profiles filtered automatically`,
-        sub: 'AI flagged inflated experience, keyword-stuffing, and inconsistent career signals.',
-      })
-    }
-    if (stats.interview_ready < 15) {
-      insights.push({
-        icon: Sparkles,
-        severity: 'violet',
-        headline: `Pipeline is competitive — only ${stats.interview_ready} candidates meet interview threshold`,
-        sub: 'Score ≥ 0.70 with strong semantic match and production ML experience.',
-      })
-    }
-    if (stats.avg_recruiter_response_rate < 0.5) {
-      insights.push({
-        icon: AlertTriangle,
-        severity: 'amber',
-        headline: 'Low recruiter engagement detected in the candidate pool',
-        sub: `Avg response rate is ${Math.round(stats.avg_recruiter_response_rate * 100)}% — outreach timing and messaging may need optimization.`,
-      })
-    }
-  }
+  // Build Hiring Intelligence from live stats + top candidates
+  const severityIcons = {
+    amber:   AlertTriangle,
+    rose:    ShieldAlert,
+    violet:  Brain,
+    emerald: Sparkles,
+  } as const
+
+  const rawIntelligence = stats
+    ? generateHiringIntelligence(stats, topCandidates?.candidates ?? [])
+    : []
+
+  const insights: InsightCardProps[] = rawIntelligence.map((item) => ({
+    icon: severityIcons[item.severity],
+    severity: item.severity,
+    headline: item.headline,
+    sub: item.detail,
+    actionLabel: item.actionLabel,
+    actionTo: item.actionTo,
+  }))
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-5">
@@ -285,13 +268,13 @@ export function Dashboard() {
         </div>
       </motion.div>
 
-      {/* ── AI Insights ── */}
+      {/* ── Hiring Intelligence ── */}
       {(stats && insights.length > 0) && (
         <motion.div variants={fadeUp} initial="initial" animate="animate" transition={{ delay: 0.1, duration: 0.4 }}>
           <div className="rounded-xl border border-white/[0.06] bg-zinc-900/40 p-5">
             <div className="flex items-center gap-2 mb-3">
               <Brain className="w-4 h-4 text-violet-400" />
-              <p className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">AI Insights</p>
+              <p className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">Hiring Intelligence</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {insights.map((ins, i) => (
@@ -416,9 +399,22 @@ export function Dashboard() {
                       <div className="flex items-center gap-1.5 shrink-0">
                         {c.has_production_ml && <Badge variant="emerald">Prod ML</Badge>}
                         {c.is_hidden_gem && <Badge variant="amber">Gem</Badge>}
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-md border ${scoreBg(c.overall_score)}`}>
-                          {(c.overall_score * 100).toFixed(1)}
-                        </span>
+                        {(() => {
+                          const rec = interviewRecommendation(c.overall_score, c.has_production_ml, c.is_hidden_gem)
+                          const cls: Record<string, string> = {
+                            emerald: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-300',
+                            violet:  'bg-violet-500/10 border-violet-500/25 text-violet-300',
+                            blue:    'bg-blue-500/10 border-blue-500/25 text-blue-300',
+                            amber:   'bg-amber-500/10 border-amber-500/25 text-amber-300',
+                            zinc:    'bg-zinc-800 border-zinc-700 text-zinc-400',
+                            rose:    'bg-rose-500/10 border-rose-500/25 text-rose-300',
+                          }
+                          return (
+                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border whitespace-nowrap ${cls[rec.color]}`}>
+                              {rec.label}
+                            </span>
+                          )
+                        })()}
                       </div>
                     </Link>
                   ))}
